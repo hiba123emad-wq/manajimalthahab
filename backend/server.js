@@ -15,7 +15,7 @@ const supabase = createClient(
 
 app.use(cors({ origin: "*" }));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "..", "frontend")));
+app.use(express.static(path.join(__dirname, "frontend")));
 
 const CERT_FOLDERS = {
   toolbox_talks:     "certificates/toolbox_talks",
@@ -230,6 +230,6 @@ app.post("/rename_certificate", async (req, res) => {
   } catch(err) { return res.status(500).json({ status:"error", message:err.message }); }
 });
 
-app.get("/", (_req,res) => res.sendFile(path.join(__dirname, "..", "frontend", "index.html")));
+app.get("/", (_req,res) => res.sendFile(path.join(__dirname, "frontend", "index.html")));
 app.listen(PORT, () => console.log(`✅ Server → http://localhost:${PORT}`))
   .on("error", err => { if(err.code==="EADDRINUSE"){ console.error(`❌ البورت ${PORT} مشغول!`); process.exit(1); }});

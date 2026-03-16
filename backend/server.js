@@ -230,6 +230,6 @@ app.post("/rename_certificate", async (req, res) => {
   } catch(err) { return res.status(500).json({ status:"error", message:err.message }); }
 });
 
-app.get("/", (_req,res) => res.json({ status:"running", message:"Sorooh Albasrah HSE API 🟢" }));
+app.get("/", (_req,res) => res.sendFile(path.join(__dirname, "..", "frontend", "index.html")));
 app.listen(PORT, () => console.log(`✅ Server → http://localhost:${PORT}`))
   .on("error", err => { if(err.code==="EADDRINUSE"){ console.error(`❌ البورت ${PORT} مشغول!`); process.exit(1); }});

@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>رفع التقارير الشهرية - شركة مناجم الذهب</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f8f9fb;--bg-2:#eef1f6;--bg-3:#e2e7ef;
+  --surface:#ffffff;--surface-2:#f4f6fa;
+  --border:rgba(30,60,120,0.08);--border-2:rgba(30,60,120,0.15);
+  --red:#c0251a;--red-lt:#e03020;--red-dim:rgba(192,37,26,0.10);--red-deep:#8a1810;
+  --amber:#b87d00;--amber-lt:#e8a800;--amber-dim:rgba(184,125,0,0.12);
+  --green:#16a34a;--green-dim:rgba(22,163,74,0.10);
+  --text:#1a1f2e;--text-muted:#4a5568;--text-dim:#8a96a8;
+  --radius:13px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Cairo",sans-serif;background:var(--bg);min-height:100vh;color:var(--text)}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 50% -10%,rgba(192,37,26,0.04) 0%,transparent 70%);pointer-events:none;z-index:0}
+
+.site-header{background:#ffffff;border-bottom:2.5px solid var(--red);position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(30,40,80,0.10)}
+.header-inner{max-width:860px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:12px 24px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-logo-wrap{width:44px;height:44px;display:flex;align-items:center;justify-content:center}
+.brand-logo-wrap img{width:100%;height:100%;object-fit:contain}
+.brand-divider{width:1px;height:34px;background:rgba(192,37,26,0.2)}
+.brand-name{font-size:13px;font-weight:800;color:var(--red)}
+.brand-sub{font-size:10px;color:var(--text-muted)}
+.header-title{font-size:14px;font-weight:700;color:var(--text)}
+.btn-menu{background:none;border:1px solid rgba(192,37,26,0.2);cursor:pointer;color:var(--red);font-size:20px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:8px}
+
+.main{max-width:860px;margin:0 auto;padding:36px 24px 80px;position:relative;z-index:1}
+
+.page-hero{text-align:center;margin-bottom:28px}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--red-dim);border:1px solid rgba(181,42,28,0.2);color:var(--red);padding:4px 14px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.06em;margin-bottom:10px}
+.page-hero h2{font-size:24px;font-weight:900}
+.page-hero p{font-size:13px;color:var(--text-muted);margin-top:4px}
+
+/* DATE BAR */
+.date-bar{display:flex;align-items:center;gap:12px;background:var(--surface);border:1.5px solid var(--border-2);border-radius:var(--radius);padding:14px 18px;margin-bottom:24px}
+.date-bar label{font-size:12px;font-weight:700;color:var(--text-muted);white-space:nowrap}
+.date-sel{flex:1;border:1.5px solid var(--border-2);border-radius:8px;padding:9px 12px;font-family:"Cairo",sans-serif;font-size:13px;font-weight:700;color:var(--text);background:var(--bg);outline:none;cursor:pointer;transition:border-color .2s}
+.date-sel:focus{border-color:var(--red)}
+
+/* WEEK CARDS */
+.weeks-wrap{display:flex;flex-direction:column;gap:14px;margin-bottom:24px}
+.week-card{background:var(--surface);border:1.5px solid var(--border-2);border-radius:16px;overflow:hidden}
+.week-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;background:var(--bg-2);border-bottom:1px solid var(--border);user-select:none;transition:background .15s}
+.week-head:hover{background:var(--bg-3)}
+.week-head-left{display:flex;align-items:center;gap:10px}
+.week-num{width:32px;height:32px;border-radius:50%;background:var(--red-dim);border:1.5px solid rgba(181,42,28,0.2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:var(--red);font-family:"Montserrat",sans-serif}
+.week-name{font-size:14px;font-weight:800}
+.week-count{font-size:11px;color:var(--text-muted);background:var(--bg-3);padding:2px 10px;border-radius:20px;font-weight:600}
+.week-count.has{background:var(--green-dim);color:var(--green);border:1px solid rgba(22,163,74,0.2)}
+.week-arrow{font-size:16px;color:var(--text-muted);transition:transform .25s}
+.week-arrow.open{transform:rotate(180deg)}
+
+.week-body{display:none;padding:16px 18px}
+.week-body.open{display:block;animation:fIn .2s ease}
+@keyframes fIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+
+/* DROP ZONE */
+.drop-zone{border:2px dashed rgba(181,42,28,0.25);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;background:linear-gradient(135deg,#fffaf8,#fff5f0);position:relative;margin-bottom:12px}
+.drop-zone:hover,.drop-zone.over{border-color:var(--red);background:rgba(181,42,28,0.03)}
+.drop-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.dz-icon{font-size:28px;margin-bottom:6px}
+.dz-text{font-size:12px;color:var(--text-muted)}
+.dz-text span{color:var(--red);font-weight:700}
+
+/* FILE CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px}
+.chip{display:flex;align-items:center;gap:6px;background:var(--bg-2);border:1px solid var(--border-2);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:600;max-width:220px}
+.chip-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.chip-remove{cursor:pointer;color:var(--text-dim);font-size:13px;flex-shrink:0;line-height:1;transition:color .15s}
+.chip-remove:hover{color:var(--red)}
+.chip.uploading{opacity:.6;pointer-events:none}
+.chip.done{border-color:rgba(22,163,74,0.3);background:var(--green-dim)}
+.chip.fail{border-color:rgba(204,32,32,0.3);background:rgba(204,32,32,0.06)}
+
+/* UPLOAD BTN */
+.btn-upload-all{width:100%;background:linear-gradient(135deg,var(--red-lt) 0%,var(--red-deep) 100%);color:#fff;border:none;padding:15px;font-size:15px;font-weight:800;font-family:"Cairo",sans-serif;border-radius:var(--radius);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 20px rgba(181,42,28,0.35);transition:all .25s}
+.btn-upload-all:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 28px rgba(181,42,28,0.5)}
+.btn-upload-all:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.spinner{display:none;width:20px;height:20px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.btn-upload-all.loading .btn-text{display:none}
+.btn-upload-all.loading .spinner{display:block}
+
+/* ALERT */
+.alert{display:none;align-items:flex-start;gap:10px;border-radius:var(--radius);padding:12px 15px;font-size:13px;font-weight:600;animation:slideUp .3s ease;margin-top:14px}
+.alert.visible{display:flex}
+.alert.success{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.3);color:#166534}
+.alert.error{background:rgba(204,32,32,.08);border:1px solid rgba(204,32,32,.3);color:#cc2020}
+.alert.info{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.3);color:#1e40af}
+@keyframes slideUp{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+
+/* SIDEBAR */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;backdrop-filter:blur(2px)}
+.sidebar-overlay.open{display:block}
+.sidebar{position:fixed;top:0;right:-290px;width:270px;height:100vh;background:#fff;border-left:2.5px solid var(--red);z-index:201;transition:right .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
+.sidebar.open{right:0}
+.sidebar-header{padding:18px 16px 14px;border-bottom:1px solid rgba(192,37,26,0.12);display:flex;align-items:center;justify-content:space-between}
+.sidebar-logo-text{font-size:12px;font-weight:800;color:var(--red);line-height:1.3}
+.sidebar-logo-sub{font-size:10px;color:var(--text-muted)}
+.sidebar-close{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:18px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px}
+.sidebar-nav{flex:1;padding:14px 0;overflow-y:auto}
+.sidebar-item{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;cursor:pointer;border:none;background:none;width:100%;text-align:right;color:var(--text);font-family:"Cairo",sans-serif;font-size:13px;font-weight:600;transition:background .15s}
+.sidebar-item:hover{background:var(--red-dim)}
+.sidebar-item.active{background:var(--red-dim);color:var(--red)}
+.sidebar-item-content{display:flex;align-items:center;gap:10px}
+.sidebar-chevron{font-size:11px;color:var(--text-dim);transition:transform .25s}
+.sidebar-chevron.open{transform:rotate(90deg)}
+.sidebar-submenu{overflow:hidden;max-height:0;transition:max-height .3s ease;background:var(--bg-2)}
+.sidebar-submenu.open{max-height:200px}
+.sidebar-subitem{display:flex;align-items:center;gap:10px;padding:9px 16px 9px 28px;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;text-decoration:none;border:none;background:none;width:100%;text-align:right;font-family:"Cairo",sans-serif;transition:all .15s}
+.sidebar-subitem:hover{background:var(--red-dim);color:var(--red)}
+.sidebar-subitem.current{color:var(--red);background:var(--red-dim)}
+.sidebar-subitem-dot{width:5px;height:5px;border-radius:50%;background:var(--text-dim);flex-shrink:0}
+.sidebar-subitem.current .sidebar-subitem-dot{background:var(--red)}
+.sidebar-divider{height:1px;background:var(--border-2);margin:6px 0}
+.sidebar-footer{padding:12px 16px;border-top:1px solid var(--border-2);font-size:10px;color:var(--text-dim);text-align:center}
+
+.site-footer{border-top:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:center;gap:12px;font-size:11px;color:var(--text-dim);background:var(--bg-2)}
+.footer-dot{width:3px;height:3px;border-radius:50%;background:rgba(0,0,0,.15)}
+
+@media(max-width:600px){
+  .header-inner{padding:10px 14px}
+  .main{padding:24px 14px 60px}
+  .date-bar{flex-direction:column;align-items:flex-start;gap:8px}
+  .date-sel{width:100%}
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo-text">شركة مناجم الذهب<div class="sidebar-logo-sub">للتجارة والمقاولات العامة</div></div>
+    <button class="sidebar-close" id="sidebarClose">✕</button>
+  </div>
+  <nav class="sidebar-nav">
+    <button class="sidebar-item" id="dailyMenuBtn">
+      <div class="sidebar-item-content"><span>📋</span><span>التقارير اليومية</span></div>
+      <span class="sidebar-chevron" id="chevron-daily">›</span>
+    </button>
+    <div class="sidebar-submenu" id="submenu-daily">
+      <a class="sidebar-subitem" href="index.html"><span class="sidebar-subitem-dot"></span>رفع شهادات</a>
+      <a class="sidebar-subitem" href="files.html"><span class="sidebar-subitem-dot"></span>عرض التقارير اليومية</a>
+    </div>
+    <div class="sidebar-divider"></div>
+    <button class="sidebar-item active" id="monthlyMenuBtn">
+      <div class="sidebar-item-content"><span>📅</span><span>التقارير الشهرية</span></div>
+      <span class="sidebar-chevron open" id="chevron-monthly">›</span>
+    </button>
+    <div class="sidebar-submenu open" id="submenu-monthly">
+      <a class="sidebar-subitem current" href="monthly-upload.html"><span class="sidebar-subitem-dot"></span>رفع تقارير</a>
+      <a class="sidebar-subitem" href="monthly-files.html"><span class="sidebar-subitem-dot"></span>عرض التقارير الشهرية</a>
+    </div>
+  </nav>
+  <div class="sidebar-footer">Sorooh Albasrah HSE System v5.0</div>
+</aside>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+       <div class="brand-logo-wrap">
+      <img src="logo.png" alt="شركة مناجم الذهب"> </div>
+      <div class="brand-divider"></div>
+      <div><div class="brand-name">شركة مناجم الذهب</div><div class="brand-sub">للتجارة والمقاولات العامة</div></div>
+    </div>
+    <div class="header-title">رفع التقارير الشهرية</div>
+    <button class="btn-menu" id="sidebarOpenBtn">☰</button>
+  </div>
+</header>
+
+<main class="main">
+  <div class="page-hero">
+    <div class="hero-badge">📅 HSE Monthly Reports</div>
+    <h2>رفع التقارير الشهرية</h2>
+    <p>اختر الشهر ثم ارفع الملفات لكل أسبوع تريده</p>
+  </div>
+
+  <!-- DATE BAR -->
+  <div class="date-bar">
+    <label>📅 الشهر:</label>
+    <select class="date-sel" id="selMonth"></select>
+    <label>📆 السنة:</label>
+    <select class="date-sel" id="selYear"></select>
+  </div>
+
+  <!-- WEEK CARDS -->
+  <div class="weeks-wrap" id="weeksWrap"></div>
+
+  <!-- UPLOAD ALL -->
+  <button class="btn-upload-all" id="btnUploadAll" onclick="uploadAll()">
+    <span class="btn-text">↑ &nbsp;رفع الملفات المختارة</span>
+    <div class="spinner"></div>
+  </button>
+
+  <div class="alert" id="alertBox">
+    <span id="alertIcon"></span>
+    <span id="alertText"></span>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <span>© 2025 manajim Althahab Co.</span>
+  <div class="footer-dot"></div>
+  <span>🔒 اتصال آمن</span>
+  <div class="footer-dot"></div>
+  <span>Monthly Reports v6.0</span>
+</footer>
+
+<script>
+const WEEKS = [
+  { n:1, label:"الأسبوع الأول" },
+  { n:2, label:"الأسبوع الثاني" },
+  { n:3, label:"الأسبوع الثالث" },
+  { n:4, label:"الأسبوع الرابع" }
+];
+
+const ARABIC_MONTHS = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+
+// weekFiles[week] = [ {file, status:'pending'|'done'|'fail'} ]
+const weekFiles = {1:[],2:[],3:[],4:[]};
+
+/* ─── build selects ─── */
+function initSelects() {
+  const now = new Date();
+  const sm  = document.getElementById('selMonth');
+  const sy  = document.getElementById('selYear');
+
+  ARABIC_MONTHS.forEach((m,i) => {
+    const o = document.createElement('option');
+    o.value = String(i+1).padStart(2,'0');
+    o.textContent = m;
+    if (i === now.getMonth()) o.selected = true;
+    sm.appendChild(o);
+  });
+
+  for (let y = now.getFullYear(); y >= now.getFullYear()-3; y--) {
+    const o = document.createElement('option');
+    o.value = y; o.textContent = y;
+    if (y === now.getFullYear()) o.selected = true;
+    sy.appendChild(o);
+  }
+}
+
+/* ─── get selected month string ─── */
+function getMonthStr() {
+  return document.getElementById('selYear').value + '-' + document.getElementById('selMonth').value;
+}
+
+/* ─── build week cards ─── */
+function buildWeeks() {
+  const wrap = document.getElementById('weeksWrap');
+  wrap.innerHTML = '';
+  WEEKS.forEach(w => {
+    const card = document.createElement('div');
+    card.className = 'week-card';
+    card.id = 'card-w'+w.n;
+    card.innerHTML = `
+      <div class="week-head" onclick="toggleWeek(${w.n})">
+        <div class="week-head-left">
+          <div class="week-num">${w.n}</div>
+          <div class="week-name">${w.label}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="week-count" id="cnt-w${w.n}">لا توجد ملفات</span>
+          <span class="week-arrow" id="arr-w${w.n}">▼</span>
+        </div>
+      </div>
+      <div class="week-body" id="body-w${w.n}">
+        <div class="drop-zone" id="dz-w${w.n}">
+          <input type="file" id="fi-w${w.n}" multiple accept="image/*,.pdf,.doc,.docx" onchange="onPick(${w.n},this)">
+          <div class="dz-icon">📎</div>
+          <div class="dz-text">اسحب الملفات هنا أو <span>انقر للاختيار</span></div>
+        </div>
+        <div class="chips" id="chips-w${w.n}"></div>
+      </div>`;
+    wrap.appendChild(card);
+
+    const dz = card.querySelector('.drop-zone');
+    dz.addEventListener('dragover',  e => { e.preventDefault(); dz.classList.add('over'); });
+    dz.addEventListener('dragleave', ()  => dz.classList.remove('over'));
+    dz.addEventListener('drop', e => {
+      e.preventDefault(); dz.classList.remove('over');
+      addFiles(w.n, [...e.dataTransfer.files]);
+    });
+  });
+}
+
+function toggleWeek(n) {
+  const body = document.getElementById('body-w'+n);
+  const arr  = document.getElementById('arr-w'+n);
+  const open = body.classList.toggle('open');
+  arr.classList.toggle('open', open);
+}
+
+function onPick(n, input) {
+  addFiles(n, [...input.files]);
+  input.value = '';
+}
+
+function addFiles(n, files) {
+  files.forEach(f => {
+    if (f.size > 10*1024*1024) { showAlert('error','⚠️',`الملف "${f.name}" يتجاوز 10 MB`); return; }
+    weekFiles[n].push({ file:f, status:'pending' });
+  });
+  renderChips(n);
+  updateCount(n);
+}
+
+function removeFile(n, idx) {
+  weekFiles[n].splice(idx, 1);
+  renderChips(n);
+  updateCount(n);
+}
+
+function renderChips(n) {
+  const wrap = document.getElementById('chips-w'+n);
+  wrap.innerHTML = '';
+  weekFiles[n].forEach((entry, i) => {
+    const chip = document.createElement('div');
+    chip.className = 'chip' + (entry.status==='done'?' done':entry.status==='fail'?' fail':entry.status==='uploading'?' uploading':'');
+    const icon = entry.file.type.startsWith('image/') ? '🖼️' : entry.file.type.includes('pdf') ? '📄' : '📝';
+    chip.innerHTML = `<span>${icon}</span><span class="chip-name" title="${entry.file.name}">${entry.file.name}</span>${entry.status==='done'?'<span>✅</span>':entry.status==='fail'?'<span>❌</span>':entry.status==='uploading'?'<span style="font-size:10px">⏳</span>':`<span class="chip-remove" onclick="removeFile(${n},${i})">✕</span>`}`;
+    wrap.appendChild(chip);
+  });
+}
+
+function updateCount(n) {
+  const cnt = document.getElementById('cnt-w'+n);
+  const num = weekFiles[n].length;
+  cnt.textContent = num ? num + ' ملف' : 'لا توجد ملفات';
+  cnt.className   = 'week-count' + (num ? ' has' : '');
+}
+
+function showAlert(type, icon, msg) {
+  const b = document.getElementById('alertBox');
+  b.className = 'alert '+type+' visible';
+  document.getElementById('alertIcon').textContent = icon;
+  document.getElementById('alertText').textContent = msg;
+}
+function hideAlert() { document.getElementById('alertBox').className = 'alert'; }
+
+/* ─── UPLOAD ALL ─── */
+async function uploadAll() {
+  // check at least one file
+  const total = Object.values(weekFiles).reduce((s,a)=>s+a.length,0);
+  if (!total) { showAlert('error','⚠️','لم تختر أي ملف بعد'); return; }
+
+  const month = getMonthStr();
+  const btn   = document.getElementById('btnUploadAll');
+  btn.classList.add('loading'); btn.disabled = true;
+  hideAlert();
+
+  let uploaded=0, failed=0;
+
+  for (let w=1; w<=4; w++) {
+    for (let i=0; i<weekFiles[w].length; i++) {
+      const entry = weekFiles[w][i];
+      if (entry.status === 'done') { uploaded++; continue; }
+
+      entry.status = 'uploading';
+      renderChips(w);
+
+      const fd = new FormData();
+      fd.append('file',  entry.file, entry.file.name);
+      fd.append('month', month);
+      fd.append('week',  String(w));
+
+      try {
+        const res  = await fetch('/upload_monthly', { method:'POST', body:fd });
+        const data = await res.json();
+        if (data.status === 'success') {
+          entry.status = 'done'; uploaded++;
+        } else {
+          entry.status = 'fail'; failed++;
+          console.error('Upload fail:', data.message);
+        }
+      } catch(e) {
+        entry.status = 'fail'; failed++;
+      }
+      renderChips(w);
+    }
+  }
+
+  btn.classList.remove('loading'); btn.disabled = false;
+
+  if (failed === 0) {
+    showAlert('success','✅', `تم رفع ${uploaded} ملف بنجاح ✔`);
+    // reset done files after 2s
+    setTimeout(() => {
+      for(let w=1;w<=4;w++) { weekFiles[w] = []; renderChips(w); updateCount(w); }
+      hideAlert();
+    }, 3000);
+  } else {
+    showAlert('error','⚠️', `تم رفع ${uploaded} ملف — فشل ${failed} ملف`);
+  }
+}
+
+/* ─── INIT ─── */
+document.addEventListener('DOMContentLoaded', () => {
+  initSelects();
+  buildWeeks();
+
+  // sidebar
+  const overlay  = document.getElementById('sidebarOverlay');
+  const sidebar  = document.getElementById('sidebar');
+  document.getElementById('sidebarOpenBtn').onclick = () => { sidebar.classList.add('open'); overlay.classList.add('open'); };
+  document.getElementById('sidebarClose').onclick   = () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); };
+  overlay.onclick = () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); };
+
+  document.getElementById('dailyMenuBtn').onclick = () => {
+    document.getElementById('submenu-daily').classList.toggle('open');
+    document.getElementById('chevron-daily').classList.toggle('open');
+  };
+  document.getElementById('monthlyMenuBtn').onclick = () => {
+    document.getElementById('submenu-monthly').classList.toggle('open');
+    document.getElementById('chevron-monthly').classList.toggle('open');
+  };
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>التقارير الشهرية - شركة مناجم الذهب</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f8f9fb;--bg-2:#eef1f6;--bg-3:#e2e7ef;
+  --surface:#ffffff;--surface-2:#f4f6fa;
+  --border:rgba(30,60,120,0.08);--border-2:rgba(30,60,120,0.15);
+  --red:#c0251a;--red-lt:#e03020;--red-dim:rgba(192,37,26,0.10);--red-deep:#8a1810;
+  --amber:#b87d00;--amber-lt:#e8a800;--amber-dim:rgba(184,125,0,0.12);
+  --green:#16a34a;--green-dim:rgba(22,163,74,0.10);
+  --text:#1a1f2e;--text-muted:#4a5568;--text-dim:#8a96a8;
+  --radius:13px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Cairo",sans-serif;background:var(--bg);min-height:100vh;color:var(--text)}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 50% -10%,rgba(192,37,26,0.04) 0%,transparent 70%);pointer-events:none;z-index:0}
+
+.site-header{background:#ffffff;border-bottom:2.5px solid var(--red);position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(30,40,80,0.10)}
+.header-inner{max-width:1000px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:12px 24px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-logo-wrap{width:44px;height:44px;display:flex;align-items:center;justify-content:center}
+.brand-logo-wrap img{width:100%;height:100%;object-fit:contain}
+.brand-divider{width:1px;height:34px;background:rgba(192,37,26,0.2)}
+.brand-name{font-size:13px;font-weight:800;color:var(--red)}
+.brand-sub{font-size:10px;color:var(--text-muted)}
+.header-title{font-size:14px;font-weight:700;color:var(--text)}
+.btn-menu{background:none;border:1px solid rgba(192,37,26,0.2);cursor:pointer;color:var(--red);font-size:20px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:8px}
+
+.main{max-width:1000px;margin:0 auto;padding:36px 24px 80px;position:relative;z-index:1}
+
+.page-hero{text-align:center;margin-bottom:32px}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--red-dim);border:1px solid rgba(181,42,28,0.2);color:var(--red);padding:4px 14px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.06em;margin-bottom:10px}
+.page-hero h2{font-size:24px;font-weight:900}
+.page-hero p{font-size:13px;color:var(--text-muted);margin-top:4px}
+
+/* MONTHS GRID — أفقي */
+.months-grid{display:flex;flex-direction:column;gap:12px;margin-bottom:32px}
+.month-card{
+  background:var(--surface);
+  border:1.5px solid var(--border-2);
+  border-radius:16px;
+  padding:0;
+  cursor:pointer;
+  transition:all .22s;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  align-items:stretch;
+}
+.month-card::before{content:"";position:absolute;top:0;bottom:0;right:0;width:4px;background:linear-gradient(180deg,var(--red-lt),var(--amber))}
+.month-card:hover{transform:translateX(-3px);box-shadow:0 6px 24px rgba(120,40,10,0.13);border-color:rgba(181,42,28,0.28)}
+.month-card.active{border-color:var(--red);box-shadow:0 4px 20px rgba(181,42,28,0.18);background:var(--surface-2)}
+
+/* الجزء الأيمن — اسم الشهر */
+.month-card-label{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:flex-end;
+  padding:16px 22px 16px 16px;
+  min-width:120px;
+  border-left:1px solid var(--border);
+}
+.month-name{font-size:20px;font-weight:900;color:var(--text);line-height:1.1}
+.month-year{font-size:11px;color:var(--text-muted);font-weight:700;margin-top:3px;font-family:"Montserrat",sans-serif}
+
+/* الوسط — إحصائيات */
+.month-card-stats{
+  flex:1;
+  display:flex;
+  align-items:center;
+  gap:20px;
+  padding:16px 18px;
+}
+.month-stat{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:2px;
+}
+.month-stat-num{
+  font-size:22px;
+  font-weight:900;
+  font-family:"Montserrat",sans-serif;
+  line-height:1;
+  color:var(--red);
+}
+.month-stat-num.green{color:var(--green)}
+.month-stat-label{font-size:10px;color:var(--text-muted);font-weight:700;white-space:nowrap}
+.month-stat-divider{width:1px;height:36px;background:var(--border-2)}
+
+/* الأيسر — أسابيع + سهم */
+.month-card-weeks{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:flex-start;
+  padding:16px 18px 16px 22px;
+  gap:6px;
+  border-right:1px solid var(--border);
+  min-width:130px;
+}
+.month-weeks-label{font-size:10px;color:var(--text-muted);font-weight:700}
+.month-weeks-row{display:flex;gap:6px;align-items:center}
+.month-week-dot{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:22px;height:22px;
+  border-radius:6px;
+  border:1.5px solid var(--border-2);
+  background:var(--bg-2);
+  font-size:9px;
+  font-weight:800;
+  color:var(--text-dim);
+  transition:all .2s;
+}
+.month-week-dot.has{background:var(--green-dim);border-color:rgba(22,163,74,0.35);color:var(--green)}
+
+/* سهم */
+.month-card-arrow{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 16px 0 20px;
+  font-size:16px;
+  color:var(--text-dim);
+  transition:all .25s;
+}
+.month-card:hover .month-card-arrow{color:var(--red);transform:translateX(-3px)}
+.month-card.active .month-card-arrow{color:var(--red)}
+
+/* زر حذف الشهر */
+.btn-del-month{
+  display:flex;align-items:center;justify-content:center;
+  width:30px;height:30px;border-radius:8px;
+  border:1.5px solid rgba(181,42,28,0.2);
+  background:var(--red-dim);color:var(--red);
+  cursor:pointer;font-size:13px;transition:all .2s;
+  flex-shrink:0;
+}
+.btn-del-month:hover{background:rgba(181,42,28,0.18);border-color:rgba(181,42,28,0.45);transform:scale(1.1)}
+
+/* DETAIL PANEL */
+.detail-panel{background:var(--surface);border:1.5px solid var(--border-2);border-radius:18px;overflow:hidden;box-shadow:0 4px 20px rgba(120,40,10,0.08);margin-bottom:24px;animation:panelIn .3s ease}
+@keyframes panelIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.detail-header{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;background:linear-gradient(135deg,var(--red-deep),#1c0808);color:#fff}
+.detail-title{font-size:16px;font-weight:800;display:flex;align-items:center;gap:10px}
+.detail-close{background:rgba(255,255,255,0.15);border:none;color:#fff;cursor:pointer;width:30px;height:30px;border-radius:8px;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.detail-close:hover{background:rgba(255,255,255,0.25)}
+
+/* WEEK SECTIONS */
+.week-section{border-bottom:1px solid var(--border)}
+.week-section:last-child{border-bottom:none}
+.week-section-head{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;cursor:pointer;background:var(--bg-2);transition:background .15s;user-select:none}
+.week-section-head:hover{background:var(--bg-3)}
+.week-section-title{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:800}
+.week-dot{width:8px;height:8px;border-radius:50%;background:var(--red)}
+.week-file-count{font-size:11px;color:var(--text-muted);background:var(--bg-3);padding:2px 10px;border-radius:20px}
+.week-file-count.has{background:var(--green-dim);color:var(--green);border:1px solid rgba(22,163,74,0.2)}
+.week-section-body{display:none;padding:18px 20px}
+.week-section-body.open{display:block;animation:fIn .2s ease}
+@keyframes fIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.week-arrow{font-size:14px;color:var(--text-muted);transition:transform .25s}
+.week-arrow.open{transform:rotate(180deg)}
+
+/* ═══ FILES TABLE ═══ */
+.files-table-wrap{
+  width:100%;
+  overflow-x:auto;
+  border-radius:12px;
+  border:1.5px solid var(--border-2);
+  background:var(--surface);
+}
+.files-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+.files-table thead tr{
+  background:linear-gradient(90deg,var(--bg-3),var(--bg-2));
+  border-bottom:2px solid var(--border-2);
+}
+.files-table thead th{
+  padding:11px 14px;
+  font-size:11px;
+  font-weight:800;
+  color:var(--text-muted);
+  letter-spacing:.04em;
+  text-align:right;
+  white-space:nowrap;
+}
+.files-table thead th:last-child{text-align:center}
+.files-table tbody tr{
+  border-bottom:1px solid var(--border);
+  transition:background .15s;
+  animation:rowIn .22s ease both;
+}
+@keyframes rowIn{from{opacity:0;transform:translateX(6px)}to{opacity:1;transform:translateX(0)}}
+.files-table tbody tr:last-child{border-bottom:none}
+.files-table tbody tr:hover{background:var(--bg-2)}
+.files-table td{
+  padding:10px 14px;
+  vertical-align:middle;
+}
+.td-icon{
+  width:36px;
+  text-align:center;
+  font-size:20px;
+}
+.td-name{
+  font-weight:700;
+  color:var(--text);
+  max-width:260px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.td-type-badge{
+  display:inline-block;
+  font-size:9px;
+  font-weight:800;
+  padding:2px 7px;
+  border-radius:5px;
+  letter-spacing:.05em;
+  background:var(--bg-3);
+  color:var(--text-muted);
+  border:1px solid var(--border-2);
+  text-transform:uppercase;
+}
+.td-date{
+  font-size:11px;
+  color:var(--text-dim);
+  white-space:nowrap;
+}
+.td-actions{
+  text-align:center;
+  white-space:nowrap;
+}
+.td-actions-inner{
+  display:inline-flex;
+  gap:6px;
+  align-items:center;
+}
+.btn-tbl{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:5px 12px;
+  border-radius:7px;
+  font-size:11px;
+  font-weight:800;
+  font-family:"Cairo",sans-serif;
+  cursor:pointer;
+  text-decoration:none;
+  transition:all .2s;
+  border:1.5px solid transparent;
+  white-space:nowrap;
+}
+.btn-tbl:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,0.12)}
+.btn-tbl-open{
+  background:var(--green-dim);
+  color:var(--green);
+  border-color:rgba(22,163,74,0.25);
+}
+.btn-tbl-open:hover{background:rgba(22,163,74,0.18);border-color:rgba(22,163,74,0.5)}
+.btn-tbl-del{
+  background:var(--red-dim);
+  color:var(--red);
+  border-color:rgba(181,42,28,0.2);
+}
+.btn-tbl-del:hover{background:rgba(181,42,28,0.16);border-color:rgba(181,42,28,0.4)}
+
+.empty-week{
+  text-align:center;
+  padding:28px;
+  color:var(--text-muted);
+  font-size:13px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+}
+.empty-week-icon{font-size:32px;opacity:.4}
+
+/* LOADING / EMPTY */
+.status-block{padding:60px 24px;text-align:center;color:var(--text-muted)}
+.status-block .s-icon{font-size:48px;display:block;margin-bottom:14px}
+.status-block p{font-size:15px;font-weight:700;margin-bottom:6px;color:var(--text)}
+.status-block span{font-size:13px}
+.spinner-inline{display:inline-block;width:32px;height:32px;border:3px solid var(--border-2);border-top-color:var(--red);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(28,14,8,0.6);backdrop-filter:blur(6px);z-index:1000;align-items:center;justify-content:center}
+.modal-overlay.visible{display:flex}
+.modal{background:var(--surface);border-radius:20px;border:1px solid var(--border-2);padding:28px;min-width:320px;max-width:420px;width:90%;box-shadow:0 30px 80px rgba(0,0,0,0.2);animation:mIn .3s ease}
+@keyframes mIn{from{opacity:0;transform:scale(0.93) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal h3{font-size:16px;font-weight:800;margin-bottom:14px}
+.modal-desc{font-size:13px;color:var(--text-muted);margin-bottom:16px;line-height:1.6}
+.modal-actions{display:flex;gap:10px}
+.modal-actions button{flex:1;padding:11px;border-radius:10px;font-size:13px;font-weight:700;font-family:"Cairo",sans-serif;cursor:pointer;border:1px solid var(--border-2);transition:all .2s}
+.btn-confirm-del{background:linear-gradient(135deg,#ef4444,#b91c1c);color:#fff;border-color:transparent!important}
+.btn-cancel{background:var(--bg-2);color:var(--text-muted)}
+.btn-cancel:hover{background:var(--bg-3)}
+
+/* SIDEBAR */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;backdrop-filter:blur(2px)}
+.sidebar-overlay.open{display:block}
+.sidebar{position:fixed;top:0;right:-290px;width:270px;height:100vh;background:#fff;border-left:2.5px solid var(--red);z-index:201;transition:right .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
+.sidebar.open{right:0}
+.sidebar-header{padding:18px 16px 14px;border-bottom:1px solid rgba(192,37,26,0.12);display:flex;align-items:center;justify-content:space-between}
+.sidebar-logo-text{font-size:12px;font-weight:800;color:var(--red);line-height:1.3}
+.sidebar-logo-sub{font-size:10px;color:var(--text-muted)}
+.sidebar-close{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:18px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px}
+.sidebar-nav{flex:1;padding:14px 0;overflow-y:auto}
+.sidebar-item{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;cursor:pointer;border:none;background:none;width:100%;text-align:right;color:var(--text);font-family:"Cairo",sans-serif;font-size:13px;font-weight:600;transition:background .15s}
+.sidebar-item:hover{background:var(--red-dim)}
+.sidebar-item.active{background:var(--red-dim);color:var(--red)}
+.sidebar-item-content{display:flex;align-items:center;gap:10px}
+.sidebar-chevron{font-size:11px;color:var(--text-dim);transition:transform .25s}
+.sidebar-chevron.open{transform:rotate(90deg)}
+.sidebar-submenu{overflow:hidden;max-height:0;transition:max-height .3s ease;background:var(--bg-2)}
+.sidebar-submenu.open{max-height:200px}
+.sidebar-subitem{display:flex;align-items:center;gap:10px;padding:9px 16px 9px 28px;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;text-decoration:none;border:none;background:none;width:100%;text-align:right;font-family:"Cairo",sans-serif;transition:all .15s}
+.sidebar-subitem:hover{background:var(--red-dim);color:var(--red)}
+.sidebar-subitem.current{color:var(--red);background:var(--red-dim)}
+.sidebar-subitem-dot{width:5px;height:5px;border-radius:50%;background:var(--text-dim);flex-shrink:0}
+.sidebar-subitem.current .sidebar-subitem-dot{background:var(--red)}
+.sidebar-divider{height:1px;background:var(--border-2);margin:6px 0}
+.sidebar-footer{padding:12px 16px;border-top:1px solid var(--border-2);font-size:10px;color:var(--text-dim);text-align:center}
+
+.site-footer{border-top:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:center;gap:12px;font-size:11px;color:var(--text-dim);background:var(--bg-2)}
+.footer-dot{width:3px;height:3px;border-radius:50%;background:rgba(0,0,0,.15)}
+
+/* TOOLTIP */
+[data-tip]{position:relative}
+[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1c0e08;color:#fff;font-size:10px;font-weight:600;padding:4px 8px;border-radius:6px;white-space:nowrap;pointer-events:none;font-family:"Cairo",sans-serif}
+
+@media(max-width:600px){
+  .months-grid{grid-template-columns:1fr 1fr}
+  .files-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+  .main{padding:24px 14px 60px}
+  .header-inner{padding:10px 14px}
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo-text">شركة مناجم الذهب<div class="sidebar-logo-sub">للتجارة والمقاولات العامة</div></div>
+    <button class="sidebar-close" id="sidebarClose">✕</button>
+  </div>
+  <nav class="sidebar-nav">
+    <button class="sidebar-item" id="dailyMenuBtn">
+      <div class="sidebar-item-content"><span>📋</span><span>التقارير اليومية</span></div>
+      <span class="sidebar-chevron" id="chevron-daily">›</span>
+    </button>
+    <div class="sidebar-submenu" id="submenu-daily">
+      <a class="sidebar-subitem" href="index.html"><span class="sidebar-subitem-dot"></span>رفع شهادات</a>
+      <a class="sidebar-subitem" href="files.html"><span class="sidebar-subitem-dot"></span>عرض التقارير اليومية</a>
+    </div>
+    <div class="sidebar-divider"></div>
+    <button class="sidebar-item active" id="monthlyMenuBtn">
+      <div class="sidebar-item-content"><span>📅</span><span>التقارير الشهرية</span></div>
+      <span class="sidebar-chevron open" id="chevron-monthly">›</span>
+    </button>
+    <div class="sidebar-submenu open" id="submenu-monthly">
+      <a class="sidebar-subitem" href="monthly-upload.html"><span class="sidebar-subitem-dot"></span>رفع تقارير</a>
+      <a class="sidebar-subitem current" href="monthly-files.html"><span class="sidebar-subitem-dot"></span>عرض التقارير الشهرية</a>
+    </div>
+  </nav>
+  <div class="sidebar-footer">Sorooh Albasrah HSE System v5.0</div>
+</aside>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-logo-wrap">
+      <img src="logo.png" alt="شركة مناجم الذهب"> </div>
+      <div class="brand-divider"></div>
+      <div><div class="brand-name">شركة مناجم الذهب</div><div class="brand-sub">للتجارة والمقاولات العامة</div></div>
+    </div>
+    <div class="header-title">التقارير الشهرية</div>
+    <button class="btn-menu" id="sidebarOpenBtn">☰</button>
+  </div>
+</header>
+
+<main class="main">
+  <div class="page-hero">
+    <div class="hero-badge">📅 HSE Monthly Reports</div>
+    <h2>التقارير الشهرية</h2>
+    <p>اضغط على الشهر لعرض ملفات الأسابيع الأربعة</p>
+  </div>
+
+  <div class="months-grid" id="monthsGrid">
+    <div class="status-block">
+      <div class="spinner-inline"></div>
+      <p>جاري التحميل…</p>
+    </div>
+  </div>
+
+  <div id="detailWrap"></div>
+</main>
+
+<footer class="site-footer">
+  <span>© 2025 manajim Althahab Co.</span>
+  <div class="footer-dot"></div>
+  <span>🔒 اتصال آمن</span>
+  <div class="footer-dot"></div>
+  <span>Monthly Reports v6.0</span>
+</footer>
+
+<!-- DELETE MODAL -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <h3>🗑️ حذف الملف</h3>
+    <p class="modal-desc">هل أنت متأكد؟ لا يمكن التراجع عن هذا الإجراء.</p>
+    <div class="modal-actions">
+      <button class="btn-confirm-del" onclick="confirmDelete()">نعم، احذف</button>
+      <button class="btn-cancel" onclick="closeModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE MONTH MODAL -->
+<div class="modal-overlay" id="deleteMonthModal">
+  <div class="modal">
+    <h3>🗑️ حذف الشهر كاملاً</h3>
+    <p class="modal-desc">سيتم حذف <strong>جميع ملفات هذا الشهر</strong> نهائياً. لا يمكن التراجع عن هذا الإجراء.</p>
+    <div class="modal-actions">
+      <button class="btn-confirm-del" onclick="confirmDeleteMonth()">نعم، احذف الكل</button>
+      <button class="btn-cancel" onclick="closeMonthModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ARABIC_MONTHS = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+const WEEK_NAMES    = ["","الأسبوع الأول","الأسبوع الثاني","الأسبوع الثالث","الأسبوع الرابع"];
+
+let allMonthsData = {};
+let activeMonth   = null;
+let pendingDelete = null;
+
+function monthLabel(m) {
+  const [y, mo] = m.split('-');
+  return ARABIC_MONTHS[parseInt(mo)-1] + ' ' + y;
+}
+
+function getFileInfo(name) {
+  const ext = (name||'').split('.').pop().toLowerCase();
+  if (['jpg','jpeg','png','gif','webp'].includes(ext)) return { icon:'🖼️', type:'صورة', label: ext.toUpperCase() };
+  if (ext==='pdf') return { icon:'📄', type:'PDF', label:'PDF' };
+  if (['doc','docx'].includes(ext)) return { icon:'📝', type:'ورد', label:'WORD' };
+  if (['xls','xlsx'].includes(ext)) return { icon:'📊', type:'إكسل', label:'EXCEL' };
+  return { icon:'📁', type:'ملف', label: ext.toUpperCase() || 'FILE' };
+}
+
+function formatDate(ts) {
+  if (!ts) return '—';
+  return new Date(ts).toLocaleDateString('ar-IQ',{year:'numeric',month:'short',day:'numeric'});
+}
+
+/* ─── LOAD months list ─── */
+async function loadMonths() {
+  try {
+    const res  = await fetch('/list_monthly_months');
+    const data = await res.json();
+    if (data.status !== 'success' || !data.months.length) {
+      showEmpty(); return;
+    }
+    await Promise.all(data.months.map(m => loadMonthFiles(m)));
+    renderMonthCards(data.months);
+  } catch(e) {
+    document.getElementById('monthsGrid').innerHTML = `<div class="status-block"><span class="s-icon">⚠️</span><p>تعذّر التحميل</p><span>${e.message}</span></div>`;
+  }
+}
+
+async function loadMonthFiles(month) {
+  const res  = await fetch('/list_monthly?month='+month);
+  const data = await res.json();
+  allMonthsData[month] = data.status==='success' ? data.files : [];
+}
+
+function showEmpty() {
+  document.getElementById('monthsGrid').innerHTML = `
+    <div class="status-block" style="grid-column:1/-1">
+      <span class="s-icon">📭</span>
+      <p>لا توجد تقارير شهرية بعد</p>
+      <span>ارفع تقارير من صفحة الرفع</span>
+    </div>`;
+}
+
+/* ─── RENDER MONTH CARDS ─── */
+function renderMonthCards(months) {
+  const grid = document.getElementById('monthsGrid');
+  grid.innerHTML = '';
+
+  months.forEach(m => {
+    const files  = allMonthsData[m] || [];
+    const total  = files.length;
+    const weeksWithFiles = new Set(files.map(f=>f.week));
+    const weeksFilled = weeksWithFiles.size;
+
+    const card = document.createElement('div');
+    card.className = 'month-card' + (m===activeMonth?' active':'');
+    card.onclick = () => openMonth(m, card);
+
+    const weekDots = [1,2,3,4].map(w =>
+      `<div class="month-week-dot ${weeksWithFiles.has(String(w))?'has':''}" title="${WEEK_NAMES[w]}">${w}</div>`
+    ).join('');
+
+    card.innerHTML = `
+      <div class="month-card-label">
+        <div class="month-name">${ARABIC_MONTHS[parseInt(m.split('-')[1])-1]}</div>
+        <div class="month-year">${m.split('-')[0]}</div>
+      </div>
+
+      <div class="month-card-weeks">
+        <div class="month-weeks-label">الأسابيع</div>
+        <div class="month-weeks-row">${weekDots}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding:0 18px 0 14px">
+        <button class="btn-del-month" onclick="event.stopPropagation();askDeleteMonth('${m}')" title="حذف الشهر">🗑️</button>
+        <div class="month-card-arrow" style="padding:0">‹</div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+/* ─── OPEN MONTH DETAIL ─── */
+function openMonth(month, card) {
+  if (activeMonth === month) {
+    activeMonth = null;
+    document.getElementById('detailWrap').innerHTML = '';
+    document.querySelectorAll('.month-card').forEach(c=>c.classList.remove('active'));
+    return;
+  }
+  activeMonth = month;
+  document.querySelectorAll('.month-card').forEach(c=>c.classList.remove('active'));
+  card.classList.add('active');
+  renderDetail(month);
+  setTimeout(() => document.getElementById('detailWrap').scrollIntoView({behavior:'smooth',block:'start'}), 100);
+}
+
+function renderDetail(month) {
+  const files = allMonthsData[month] || [];
+  const wrap  = document.getElementById('detailWrap');
+
+  // group by week — sort each week's files newest first
+  const byWeek = {1:[],2:[],3:[],4:[]};
+  files.forEach(f => { const w=parseInt(f.week); if(byWeek[w]) byWeek[w].push(f); });
+  [1,2,3,4].forEach(w => {
+    byWeek[w].sort((a,b) => (b.created_at||0) - (a.created_at||0));
+  });
+
+  const weekSections = [1,2,3,4].map(w => {
+    const wFiles  = byWeek[w];
+    const hasFiles = wFiles.length > 0;
+
+    const gridContent = hasFiles
+      ? `<div class="files-table-wrap">
+          <table class="files-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>اسم الملف</th>
+                <th>النوع</th>
+                <th>تاريخ الرفع</th>
+                <th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${wFiles.map((f, i) => {
+                const info = getFileInfo(f.displayName || f.name);
+                return `
+                <tr style="animation-delay:${i*30}ms">
+                  <td class="td-icon">${info.icon}</td>
+                  <td class="td-name">${f.displayName||f.name}</td>
+                  <td><span class="td-type-badge">${info.label}</span></td>
+                  <td class="td-date">${formatDate(f.created_at)}</td>
+                  <td class="td-actions">
+                    <div class="td-actions-inner">
+                      <a class="btn-tbl btn-tbl-open" href="${f.publicUrl}" target="_blank">🔗 فتح</a>
+                      <button class="btn-tbl btn-tbl-del" onclick="askDelete('${f.id}','${f.name}','${f.folder}')">🗑️ حذف</button>
+                    </div>
+                  </td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>`
+      : `<div class="empty-week">
+          <span class="empty-week-icon">📭</span>
+          <span>لا توجد ملفات لهذا الأسبوع</span>
+        </div>`;
+
+    return `
+      <div class="week-section">
+        <div class="week-section-head" onclick="toggleWeekSection(this)">
+          <div class="week-section-title">
+            <div class="week-dot"></div>
+            ${WEEK_NAMES[w]}
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="week-file-count ${hasFiles?'has':''}">${hasFiles ? wFiles.length+' ملف' : 'فارغ'}</span>
+            <span class="week-arrow">▼</span>
+          </div>
+        </div>
+        <div class="week-section-body">${gridContent}</div>
+      </div>`;
+  }).join('');
+
+  wrap.innerHTML = `
+    <div class="detail-panel">
+      <div class="detail-header">
+        <div class="detail-title">📅 ${monthLabel(month)}</div>
+        <button class="detail-close" onclick="closeDetail()">✕</button>
+      </div>
+      ${weekSections}
+    </div>`;
+}
+
+function toggleWeekSection(head) {
+  const body  = head.nextElementSibling;
+  const arrow = head.querySelector('.week-arrow');
+  const open  = body.classList.toggle('open');
+  arrow.classList.toggle('open', open);
+}
+
+function closeDetail() {
+  activeMonth = null;
+  document.getElementById('detailWrap').innerHTML = '';
+  document.querySelectorAll('.month-card').forEach(c=>c.classList.remove('active'));
+}
+
+/* ─── DELETE MONTH ─── */
+let pendingDeleteMonth = null;
+function askDeleteMonth(month) {
+  pendingDeleteMonth = month;
+  document.getElementById('deleteMonthModal').classList.add('visible');
+}
+function closeMonthModal() {
+  document.getElementById('deleteMonthModal').classList.remove('visible');
+  pendingDeleteMonth = null;
+}
+async function confirmDeleteMonth() {
+  if (!pendingDeleteMonth) return;
+  const month = pendingDeleteMonth;
+  const files = allMonthsData[month] || [];
+  closeMonthModal();
+  // delete all files in month
+  try {
+    await Promise.all(files.map(f =>
+      fetch('/delete_certificate', {
+        method:'DELETE',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ id:f.id, fileName:f.name, folder:f.folder })
+      })
+    ));
+    delete allMonthsData[month];
+    if (activeMonth === month) {
+      activeMonth = null;
+      document.getElementById('detailWrap').innerHTML = '';
+    }
+    const months = Object.keys(allMonthsData);
+    if (months.length) renderMonthCards(months);
+    else showEmpty();
+  } catch(e) { alert('خطأ: '+e.message); }
+}
+
+/* ─── DELETE ─── */
+function askDelete(id, name, folder) {
+  pendingDelete = { id, name, folder };
+  document.getElementById('deleteModal').classList.add('visible');
+}
+function closeModal() {
+  document.getElementById('deleteModal').classList.remove('visible');
+  pendingDelete = null;
+}
+async function confirmDelete() {
+  if (!pendingDelete) return;
+  try {
+    const res  = await fetch('/delete_certificate', {
+      method:'DELETE',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ id:pendingDelete.id, fileName:pendingDelete.name, folder:pendingDelete.folder })
+    });
+    const data = await res.json();
+    closeModal();
+    if (data.status==='success') {
+      await loadMonthFiles(activeMonth);
+      const months = Object.keys(allMonthsData);
+      renderMonthCards(months);
+      renderDetail(activeMonth);
+    }
+  } catch(e) { closeModal(); alert('خطأ: '+e.message); }
+}
+
+/* ─── INIT ─── */
+document.addEventListener('DOMContentLoaded', () => {
+  loadMonths();
+
+  const overlay = document.getElementById('sidebarOverlay');
+  const sidebar = document.getElementById('sidebar');
+  document.getElementById('sidebarOpenBtn').onclick = () => { sidebar.classList.add('open'); overlay.classList.add('open'); };
+  document.getElementById('sidebarClose').onclick   = () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); };
+  overlay.onclick = () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); };
+
+  document.getElementById('dailyMenuBtn').onclick = () => {
+    document.getElementById('submenu-daily').classList.toggle('open');
+    document.getElementById('chevron-daily').classList.toggle('open');
+  };
+  document.getElementById('monthlyMenuBtn').onclick = () => {
+    document.getElementById('submenu-monthly').classList.toggle('open');
+    document.getElementById('chevron-monthly').classList.toggle('open');
+  };
+
+  document.getElementById('deleteModal').onclick = e => { if(e.target===e.currentTarget) closeModal(); };
+  document.getElementById('deleteMonthModal').onclick = e => { if(e.target===e.currentTarget) closeMonthModal(); };
+});
+</script>
+</body>
+</html>

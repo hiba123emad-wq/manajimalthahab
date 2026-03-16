@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>التقارير اليومية - شركة مناجم الذهب</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* ── Palette from logo: deep red + gold/amber ── */
+      --bg:#f8f9fb;
+      --bg-2:#eef1f6;
+      --bg-3:#e2e7ef;
+      --surface:    #ffffff;
+      --surface-2:  #fdf5ec;
+      --border:rgba(30,60,120,0.08);
+      --border-2:rgba(30,60,120,0.15);
+
+      --red:#c0251a;
+      --red-lt:#e03020;
+      --red-dim:    rgba(181,42,28,0.10);
+      --red-deep:#8a1810;
+
+      --amber:#b87d00;
+      --amber-lt:#e8a800;
+      --amber-dim:  rgba(201,138,16,0.12);
+
+      /* type colours */
+      --c1:#b52a1c; --c1-dim:rgba(181,42,28,0.10);
+      --c2:#b07a00; --c2-dim:rgba(176,122,0,0.10);
+      --c3:#1a7a4a; --c3-dim:rgba(26,122,74,0.10);
+      --c4:#8b3a00; --c4-dim:rgba(139,58,0,0.10);
+      --c5:#5c3080; --c5-dim:rgba(92,48,128,0.10);
+
+      --text:#1a1f2e;
+      --text-muted:#4a5568;
+      --text-dim:#8a96a8;
+      --error:      #cc2020;
+      --radius:     13px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:"Cairo",sans-serif;background:var(--bg);min-height:100vh;color:var(--text);overflow-x:hidden}
+
+    /* subtle warm grain */
+    body::before{
+      content:"";position:fixed;inset:0;
+      background:
+        radial-gradient(ellipse 60% 40% at 50% -10%, rgba(181,42,28,0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 80% 100%, rgba(201,138,16,0.05) 0%, transparent 60%);
+      pointer-events:none;z-index:0;
+    }
+
+    /* ══ HEADER ══ */
+    .site-header{
+      background: linear-gradient(135deg,#ffffff 0%,#f8f9fb 100%);
+      border-bottom:2.5px solid var(--red);
+      position:sticky;top:0;z-index:100;
+      box-shadow:0 2px 12px rgba(30,40,80,0.08);
+    }
+    .header-inner{
+      max-width:1100px;margin:0 auto;
+      display:flex;align-items:center;justify-content:space-between;
+      gap:20px;padding:12px 32px;
+    }
+
+    /* brand */
+    .brand{display:flex;align-items:center;gap:14px}
+    .brand-logo-wrap{
+      width:52px;height:52px;flex-shrink:0;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .brand-logo-wrap img{width:100%;height:100%;object-fit:contain;display:block}
+    .brand-divider{width:1px;height:38px;background:rgba(240,192,64,0.25);flex-shrink:0}
+    .brand-text{display:flex;flex-direction:column;gap:2px}
+    .brand-name{
+      font-family:"Cairo",sans-serif;font-size:14px;font-weight:800;
+      color:var(--red);letter-spacing:0.02em;line-height:1.2;
+    }
+    .brand-sub{font-size:11px;color:var(--text-muted);font-weight:400;letter-spacing:0.01em}
+
+    .header-center h1{font-size:14px;font-weight:700;color:var(--text);text-align:center;letter-spacing:0.02em}
+
+    .header-nav a{
+      display:inline-flex;align-items:center;gap:7px;
+      background:rgba(240,192,64,0.08);
+      border:1px solid rgba(240,192,64,0.25);
+      color:rgba(240,192,64,0.9);text-decoration:none;
+      padding:8px 16px;border-radius:10px;
+      font-size:12px;font-weight:700;font-family:"Cairo",sans-serif;transition:all .2s;
+    }
+    .header-nav a:hover{background:rgba(240,192,64,0.15);border-color:var(--amber-lt);color:var(--red)}
+
+    /* ══ MAIN ══ */
+    .main{max-width:720px;margin:0 auto;padding:44px 24px 80px;position:relative;z-index:1}
+
+    .page-hero{text-align:center;margin-bottom:36px}
+    .page-hero-badge{
+      display:inline-flex;align-items:center;gap:6px;
+      background:var(--red-dim);border:1px solid rgba(181,42,28,0.2);
+      color:var(--red);padding:4px 14px;border-radius:20px;
+      font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
+      margin-bottom:12px;
+    }
+    .page-hero h2{font-size:26px;font-weight:900;color:var(--text);letter-spacing:-.02em}
+    .page-hero p{font-size:13px;color:var(--text-muted);margin-top:6px}
+
+    /* STEP HEADER */
+    .step-header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+    .step-num{
+      width:30px;height:30px;border-radius:50%;
+      background:linear-gradient(135deg,var(--red) 0%,var(--red-deep) 100%);
+      color:#fff;display:flex;align-items:center;justify-content:center;
+      font-family:"Montserrat",sans-serif;font-size:12px;font-weight:800;
+      flex-shrink:0;box-shadow:0 2px 10px rgba(181,42,28,0.4);
+    }
+    .step-title{font-size:15px;font-weight:700;color:var(--text)}
+    .step-subtitle{font-size:11px;color:var(--text-muted);margin-top:2px}
+
+    /* REPORTS CONTAINER */
+    .reports-container{display:flex;flex-direction:column;gap:12px;margin-bottom:14px}
+
+    /* REPORT ROW */
+    .report-row{
+      background:var(--surface);
+      border:1.5px solid var(--border-2);
+      border-radius:16px;overflow:visible;
+      box-shadow:0 2px 12px rgba(120,40,10,0.07);
+      transition:border-color .2s,box-shadow .2s;
+      position:relative;
+    }
+    .report-row.has-file{border-color:rgba(34,197,94,.35);box-shadow:0 2px 12px rgba(34,197,94,.1)}
+
+    .report-row-header{
+      display:flex;align-items:center;gap:10px;padding:12px 16px;
+      border-bottom:1px solid var(--border);
+      background:linear-gradient(135deg,var(--bg-2) 0%,var(--surface) 100%);
+      border-radius:15px 15px 0 0;overflow:hidden;
+    }
+    .row-num{
+      width:22px;height:22px;border-radius:50%;
+      background:var(--red-dim);border:1px solid rgba(181,42,28,0.2);
+      display:flex;align-items:center;justify-content:center;
+      font-family:"Montserrat",sans-serif;font-size:10px;font-weight:800;color:var(--red);
+      flex-shrink:0;
+    }
+    .row-label{font-size:12px;font-weight:700;color:var(--text-muted);flex:1}
+    .row-delete{
+      background:none;border:none;cursor:pointer;color:var(--text-dim);
+      font-size:14px;width:26px;height:26px;
+      display:flex;align-items:center;justify-content:center;
+      border-radius:7px;transition:all .2s;flex-shrink:0;
+    }
+    .row-delete:hover{background:rgba(204,32,32,.1);color:var(--error)}
+
+    .report-row-body{padding:14px 16px;display:flex;flex-direction:column;gap:12px;border-radius:0 0 16px 16px;overflow:visible}
+
+    /* MINI DROPDOWN */
+    .mini-dropdown-wrapper{position:relative;z-index:10}
+    .mini-dropdown-wrapper:focus-within{z-index:9999}
+    .mini-trigger{
+      width:100%;background:var(--bg);
+      border:1.5px solid var(--border-2);border-radius:10px;
+      padding:11px 14px;display:flex;align-items:center;justify-content:space-between;
+      cursor:pointer;transition:border-color .2s,box-shadow .2s;user-select:none;
+    }
+    .mini-trigger:hover{border-color:var(--red);box-shadow:0 0 0 3px rgba(181,42,28,.07)}
+    .mini-trigger.open{
+      border-color:var(--red);box-shadow:0 0 0 3px rgba(181,42,28,.09);
+      border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom-color:transparent;
+    }
+    .mini-trigger-content{display:flex;align-items:center;gap:9px}
+    .mini-trigger-icon{font-size:18px;line-height:1}
+    .mini-trigger-text{font-size:13px;font-weight:600;color:var(--text)}
+    .mini-trigger-text.ph{color:var(--text-muted);font-weight:400}
+    .mini-tag{font-family:"Montserrat",sans-serif;font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.05em;text-transform:uppercase}
+    .mini-chevron{color:var(--text-muted);transition:transform .25s;flex-shrink:0}
+    .mini-trigger.open .mini-chevron{transform:rotate(180deg)}
+
+    .mini-menu{
+      position:absolute;top:100%;left:0;right:0;
+      background:var(--surface);
+      border:1.5px solid var(--red);border-top:none;
+      border-bottom-left-radius:10px;border-bottom-right-radius:10px;
+      box-shadow:0 12px 32px rgba(120,30,10,.18);
+      overflow:hidden;z-index:9999;display:none;
+    }
+    .mini-menu.open{display:block;animation:dropIn .18s ease}
+    @keyframes dropIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+
+    .mini-opt{display:flex;align-items:center;gap:11px;padding:11px 14px;cursor:pointer;transition:background .12s;border-bottom:1px solid var(--border)}
+    .mini-opt:last-child{border-bottom:none}
+    .mini-opt:hover{background:var(--surface-2)}
+    .mini-opt.selected{background:#fff5f2}
+    .mini-opt-icon{font-size:18px;width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .mini-opt-icon.c1{background:var(--c1-dim);border:1px solid rgba(181,42,28,.2)}
+    .mini-opt-icon.c2{background:var(--c2-dim);border:1px solid rgba(176,122,0,.2)}
+    .mini-opt-icon.c3{background:var(--c3-dim);border:1px solid rgba(26,122,74,.2)}
+    .mini-opt-icon.c4{background:var(--c4-dim);border:1px solid rgba(139,58,0,.2)}
+    .mini-opt-icon.c5{background:var(--c5-dim);border:1px solid rgba(92,48,128,.2)}
+    .mini-opt-name{font-size:12px;font-weight:700;color:var(--text);flex:1}
+    .mini-opt-tag{font-family:"Montserrat",sans-serif;font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;letter-spacing:.05em;text-transform:uppercase;display:inline-block;margin-top:2px}
+    .mini-opt-tag.c1,.mini-tag.c1{background:var(--c1-dim);color:var(--c1);border:1px solid rgba(181,42,28,.2)}
+    .mini-opt-tag.c2,.mini-tag.c2{background:var(--c2-dim);color:var(--c2);border:1px solid rgba(176,122,0,.2)}
+    .mini-opt-tag.c3,.mini-tag.c3{background:var(--c3-dim);color:var(--c3);border:1px solid rgba(26,122,74,.2)}
+    .mini-opt-tag.c4,.mini-tag.c4{background:var(--c4-dim);color:var(--c4);border:1px solid rgba(139,58,0,.2)}
+    .mini-opt-tag.c5,.mini-tag.c5{background:var(--c5-dim);color:var(--c5);border:1px solid rgba(92,48,128,.2)}
+    .mini-opt-check{font-size:12px;opacity:0;transition:opacity .12s;font-weight:700}
+    .mini-opt-check.c1{color:var(--c1)}.mini-opt-check.c2{color:var(--c2)}
+    .mini-opt-check.c3{color:var(--c3)}.mini-opt-check.c4{color:var(--c4)}
+    .mini-opt-check.c5{color:var(--c5)}
+    .mini-opt.selected .mini-opt-check{opacity:1}
+
+    /* FILE ZONE */
+    .row-file-zone{
+      border:1.5px dashed rgba(181,42,28,.2);border-radius:10px;padding:20px;
+      text-align:center;cursor:pointer;transition:all .2s;
+      background:linear-gradient(135deg,#fffaf8 0%,#fff5f0 100%);position:relative;
+    }
+    .row-file-zone:hover,.row-file-zone.dragover{border-color:var(--red);background:rgba(181,42,28,.03)}
+    .row-file-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+    .row-file-zone-icon{font-size:22px;margin-bottom:6px}
+    .row-file-zone-text{font-size:12px;color:var(--text-muted)}
+    .row-file-zone-text span{color:var(--red);font-weight:700}
+
+    /* file chip */
+    .row-file-chip{display:none;align-items:center;gap:10px;background:#f0faf4;border:1px solid rgba(34,197,94,.25);border-radius:10px;padding:10px 13px;animation:slideUp .2s ease}
+    @keyframes slideUp{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+    .row-file-chip.visible{display:flex}
+    .rfc-icon{width:32px;height:32px;border-radius:8px;background:rgba(34,197,94,.12);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+    .rfc-info{flex:1;min-width:0}
+    .rfc-name{font-size:12px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .rfc-meta{font-size:10px;color:var(--text-muted);margin-top:1px}
+    .rfc-remove{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:13px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:all .2s;flex-shrink:0}
+    .rfc-remove:hover{background:rgba(204,32,32,.12);color:var(--error)}
+
+    /* NOTE INPUT */
+    .row-note-wrap{margin-top:2px}
+    .row-note-label{font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;display:flex;align-items:center;gap:5px}
+    .row-note{
+      width:100%;border:1.5px solid var(--border-2);border-radius:10px;
+      padding:10px 13px;font-size:12px;font-family:"Cairo",sans-serif;
+      color:var(--text);background:var(--bg);
+      outline:none;resize:vertical;min-height:68px;max-height:160px;
+      transition:border-color .2s,box-shadow .2s;line-height:1.6;
+    }
+    .row-note::placeholder{color:var(--text-dim)}
+    .row-note:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(181,42,28,.07)}
+
+    /* ADD ROW */
+    .btn-add-row{
+      width:100%;padding:13px;
+      background:none;
+      border:2px dashed rgba(181,42,28,.25);
+      border-radius:14px;color:var(--red);
+      font-size:14px;font-weight:700;font-family:"Cairo",sans-serif;
+      cursor:pointer;transition:all .2s;
+      display:flex;align-items:center;justify-content:center;gap:8px;
+      margin-bottom:24px;
+    }
+    .btn-add-row:hover{background:var(--red-dim);border-color:var(--red)}
+
+    /* SUMMARY BAR */
+    .summary-bar{
+      display:none;background:var(--surface);
+      border:1px solid var(--border-2);border-radius:12px;
+      padding:12px 16px;margin-bottom:16px;
+      gap:8px;flex-wrap:wrap;align-items:center;
+    }
+    .summary-bar.visible{display:flex}
+    .summary-label{font-size:12px;color:var(--text-muted);font-weight:600}
+    .summary-chip{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+    .summary-chip.c1{background:var(--c1-dim);color:var(--c1);border:1px solid rgba(181,42,28,.2)}
+    .summary-chip.c2{background:var(--c2-dim);color:var(--c2);border:1px solid rgba(176,122,0,.2)}
+    .summary-chip.c3{background:var(--c3-dim);color:var(--c3);border:1px solid rgba(26,122,74,.2)}
+    .summary-chip.c4{background:var(--c4-dim);color:var(--c4);border:1px solid rgba(139,58,0,.2)}
+    .summary-chip.c5{background:var(--c5-dim);color:var(--c5);border:1px solid rgba(92,48,128,.2)}
+
+    /* UPLOAD BTN */
+    .btn-upload{
+      width:100%;
+      background:linear-gradient(135deg,var(--red-lt) 0%,var(--red-deep) 100%);
+      color:#fff;border:none;padding:16px 24px;
+      font-size:15px;font-weight:800;font-family:"Cairo",sans-serif;
+      border-radius:var(--radius);cursor:pointer;transition:all .25s ease;
+      display:flex;align-items:center;justify-content:center;gap:10px;
+      box-shadow:0 4px 20px rgba(181,42,28,.4);letter-spacing:.01em;
+    }
+    .btn-upload:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 30px rgba(181,42,28,.55)}
+    .btn-upload:active:not(:disabled){transform:translateY(0)}
+    .btn-upload:disabled{opacity:.45;cursor:not-allowed;transform:none}
+    .spinner{display:none;width:20px;height:20px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .btn-upload.loading .btn-text{display:none}
+    .btn-upload.loading .spinner{display:block}
+
+    .alert{display:none;align-items:flex-start;gap:10px;border-radius:var(--radius);padding:12px 15px;font-size:13px;font-weight:600;animation:slideUp .3s ease;margin-top:12px}
+    .alert.visible{display:flex}
+    .alert.success{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.3);color:#166534}
+    .alert.error{background:rgba(204,32,32,.08);border:1px solid rgba(204,32,32,.3);color:var(--error)}
+    .alert-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+
+    /* FOOTER */
+    .site-footer{
+      border-top:1px solid var(--border);padding:14px 32px;
+      display:flex;align-items:center;justify-content:center;gap:14px;
+      font-size:11px;color:var(--text-dim);
+      background:linear-gradient(135deg,var(--bg-2) 0%,var(--bg) 100%);
+    }
+    .footer-dot{width:3px;height:3px;border-radius:50%;background:rgba(0,0,0,.15)}
+
+    @media(max-width:640px){
+      .header-inner{flex-direction:column;text-align:center;padding:12px 16px;gap:10px}
+      .brand{justify-content:center}
+      .brand-divider{display:none}
+      .main{padding:28px 14px 60px}
+      .site-footer{flex-direction:column;gap:6px}
+    }
+
+    /* ══ SIDEBAR ══ */
+    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;backdrop-filter:blur(2px)}
+    .sidebar-overlay.open{display:block}
+    .sidebar{position:fixed;top:0;right:-300px;width:280px;height:100vh;background:#ffffff;border-left:2.5px solid var(--red);z-index:201;transition:right .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:-2px 0 16px rgba(30,40,80,0.10)}
+    .sidebar.open{right:0}
+    .sidebar-header{padding:20px 18px 16px;border-bottom:1px solid rgba(192,37,26,0.12);display:flex;align-items:center;justify-content:space-between}
+    .sidebar-logo-text{font-size:12px;font-weight:800;color:var(--red);line-height:1.3}
+    .sidebar-logo-sub{font-size:10px;color:rgba(240,192,64,0.5);font-weight:400}
+    .sidebar-close{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:18px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:7px;transition:all .2s}
+    .sidebar-close:hover{background:rgba(240,192,64,0.1);color:var(--red)}
+    .sidebar-nav{flex:1;padding:16px 0;overflow-y:auto}
+    .sidebar-section-title{font-size:10px;font-weight:700;color:rgba(240,192,64,0.4);letter-spacing:.1em;text-transform:uppercase;padding:8px 18px 6px}
+    .sidebar-item{display:flex;align-items:center;justify-content:space-between;padding:11px 18px;cursor:pointer;transition:background .15s;border:none;background:none;width:100%;text-align:right;color:var(--text);font-family:"Cairo",sans-serif;font-size:13px;font-weight:600}
+    .sidebar-item:hover{background:var(--red-dim)}
+    .sidebar-item.active{background:var(--red-dim);color:var(--red)}
+    .sidebar-item-content{display:flex;align-items:center;gap:10px}
+    .sidebar-item-icon{font-size:17px;width:28px;text-align:center}
+    .sidebar-chevron{font-size:11px;color:var(--text-dim);transition:transform .25s;flex-shrink:0}
+    .sidebar-chevron.open{transform:rotate(90deg)}
+    .sidebar-submenu{overflow:hidden;max-height:0;transition:max-height .3s ease;background:var(--bg-2)}
+    .sidebar-submenu.open{max-height:200px}
+    .sidebar-subitem{display:flex;align-items:center;gap:10px;padding:10px 18px 10px 30px;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;transition:all .15s;text-decoration:none;border:none;background:none;width:100%;text-align:right;font-family:"Cairo",sans-serif}
+    .sidebar-subitem:hover{background:rgba(240,192,64,0.08);color:var(--text)}
+    .sidebar-subitem.current{color:var(--red);background:var(--red-dim)}
+    .sidebar-subitem-dot{width:6px;height:6px;border-radius:50%;background:var(--text-dim);flex-shrink:0}
+    .sidebar-subitem.current .sidebar-subitem-dot{background:var(--red)}
+    .sidebar-divider{height:1px;background:var(--border-2);margin:8px 0}
+    .sidebar-footer{padding:14px 18px;border-top:1px solid var(--border-2)}
+    .sidebar-footer-text{font-size:10px;color:var(--text-dim);text-align:center}
+    .btn-sidebar-open{background:none;border:1px solid rgba(192,37,26,0.2);cursor:pointer;color:var(--red);font-size:20px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:8px;transition:all .2s;flex-shrink:0}
+    .btn-sidebar-open:hover{background:rgba(240,192,64,0.1);border-color:rgba(240,192,64,0.4)}
+  </style>
+</head>
+<body>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo-text">شركة مناجم الذهب<div class="sidebar-logo-sub">للتجارة والمقاولات العامة</div></div>
+    <button class="sidebar-close" id="sidebarClose">✕</button>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section-title">القائمة الرئيسية</div>
+    <button class="sidebar-item active" id="dailyMenuBtn">
+      <div class="sidebar-item-content"><span class="sidebar-item-icon">📋</span><span>التقارير اليومية</span></div>
+      <span class="sidebar-chevron open" id="chevron-daily">›</span>
+    </button>
+    <div class="sidebar-submenu open" id="submenu-daily">
+      <a class="sidebar-subitem current" href="index.html"><span class="sidebar-subitem-dot"></span>رفع شهادات</a>
+      <a class="sidebar-subitem" href="files.html"><span class="sidebar-subitem-dot"></span>عرض التقارير اليومية</a>
+    </div>
+    <div class="sidebar-divider"></div>
+    <button class="sidebar-item" id="monthlyMenuBtn">
+      <div class="sidebar-item-content"><span class="sidebar-item-icon">📅</span><span>التقارير الشهرية</span></div>
+      <span class="sidebar-chevron" id="chevron-monthly">›</span>
+    </button>
+    <div class="sidebar-submenu" id="submenu-monthly">
+      <a class="sidebar-subitem" href="monthly-upload.html"><span class="sidebar-subitem-dot"></span>رفع شهادات</a>
+      <a class="sidebar-subitem" href="monthly-files.html"><span class="sidebar-subitem-dot"></span>عرض التقارير الشهرية</a>
+    </div>
+    <div class="sidebar-divider"></div>
+  </nav>
+  <div class="sidebar-footer"><div class="sidebar-footer-text">Sorooh Albasrah HSE System v5.0</div></div>
+</aside>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-logo-wrap">
+      <img src="logo.png" alt="شركة مناجم الذهب"></div>
+      <div class="brand-divider"></div>
+      <div class="brand-text">
+        <div class="brand-name">شركة مناجم الذهب</div>
+        <div class="brand-sub">للتجارة والمقاولات العامة</div>
+      </div>
+    </div>
+    <div class="header-center"><h1>رفع التقارير اليومية</h1></div>
+    <div class="header-nav" style="display:flex;align-items:center;gap:10px;">
+      <button class="btn-sidebar-open" id="sidebarOpenBtn" title="القائمة">☰</button>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+  <div class="page-hero">
+    <div class="page-hero-badge">📋 HSE Daily Reports</div>
+    <h2>رفع التقارير اليومية</h2>
+    <p>أضف تقريراً أو أكثر — لكل تقرير نوعه الخاص وملفه</p>
+  </div>
+
+  <div class="step-header">
+    <div class="step-num">1</div>
+    <div>
+      <div class="step-title">التقارير المراد رفعها</div>
+      <div class="step-subtitle">اختر النوع وارفع الملف لكل تقرير على حدة</div>
+    </div>
+  </div>
+
+  <div class="reports-container" id="reportsContainer"></div>
+
+  <button class="btn-add-row" id="btnAddRow">＋ &nbsp;إضافة تقرير آخر</button>
+
+  <div class="summary-bar" id="summaryBar">
+    <span class="summary-label">جاهز للرفع:</span>
+    <div id="summaryChips" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+  </div>
+
+  <button class="btn-upload" id="uploadBtn" onclick="uploadAll()">
+    <span class="btn-text">↑&nbsp; رفع جميع التقارير</span>
+    <div class="spinner"></div>
+  </button>
+  <div class="alert" id="alertBox">
+    <span class="alert-icon" id="alertIcon"></span>
+    <span id="alertText"></span>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <span>© 2025 manajim Althahab Co.</span>
+  <div class="footer-dot"></div>
+  <span>🔒 اتصال آمن</span>
+  <div class="footer-dot"></div>
+  <span>Daily Reports System v5.0</span>
+</footer>
+<script src="app.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  var openBtn = document.getElementById('sidebarOpenBtn');
+  var closeBtn = document.getElementById('sidebarClose');
+  var overlay = document.getElementById('sidebarOverlay');
+  var dailyBtn = document.getElementById('dailyMenuBtn');
+
+  function openSidebar(){
+    document.getElementById('sidebar').classList.add('open');
+    overlay.classList.add('open');
+    document.body.style.overflow='hidden';
+  }
+  function closeSidebar(){
+    document.getElementById('sidebar').classList.remove('open');
+    overlay.classList.remove('open');
+    document.body.style.overflow='';
+  }
+  function toggleSubmenu(id){
+    var sub=document.getElementById(id);
+    var chev=document.getElementById('chevron-'+id.replace('submenu-',''));
+    sub.classList.toggle('open');
+    if(chev) chev.classList.toggle('open');
+  }
+
+  if(openBtn) openBtn.addEventListener('click', openSidebar);
+  if(closeBtn) closeBtn.addEventListener('click', closeSidebar);
+  if(overlay) overlay.addEventListener('click', closeSidebar);
+  if(dailyBtn) dailyBtn.addEventListener('click', function(){ toggleSubmenu('submenu-daily'); });
+  var monthlyBtn = document.getElementById('monthlyMenuBtn');
+  if(monthlyBtn) monthlyBtn.addEventListener('click', function(){ toggleSubmenu('submenu-monthly'); });
+});
+</script>
+
+</body>
+</html>
